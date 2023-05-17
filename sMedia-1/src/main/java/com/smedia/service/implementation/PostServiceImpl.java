@@ -6,10 +6,16 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.smedia.dto.ApiResponse;
 import com.smedia.dto.PostDTO;
 import com.smedia.entity.Post;
+import com.smedia.exception.ResourceNotFoundException;
 import com.smedia.repository.PostRepository;
 import com.smedia.service.PostService;
 @Service
@@ -29,9 +35,30 @@ public class PostServiceImpl implements PostService{
 	}
 	
 	@Override
-	public List<PostDTO> getAllPosts() {
-		List<Post> plist=pre.findAll();
-		return plist.stream().map((Post)->mapToDTO(Post)).collect(Collectors.toList());
+	public ApiResponse<PostDTO> getAllPosts(int pageNumber, int pageSize, String sortBy,String sortDir) {
+		
+		Sort sr=null;
+		if(sortDir.equalsIgnoreCase("Desc")) {
+			sr=Sort.by(sortBy).descending();
+		}
+		else {
+			sr=Sort.by(sortBy).ascending();
+		}
+		
+		Pageable pageable = PageRequest.of(pageNumber, pageSize, sr);
+	    Page<Post> page = pre.findAll(pageable);
+	    List<Post> plist=page.getContent();
+	    List<PostDTO> pdlist=plist.stream().map((post)->mapToDTO(post)).collect(Collectors.toList());
+	    
+	    ApiResponse<PostDTO> ar=new ApiResponse<>();
+	    ar.setContent(pdlist);
+	    ar.setPageNumber(page.getNumber());
+	    ar.setPageSize(page.getSize());
+	    ar.setTotalPages(page.getTotalPages());
+	    ar.setTotalElements(page.getTotalElements());
+	    ar.setFirst(page.isFirst());
+	    ar.setLast(page.isLast());
+	    return ar;
 	}
 
 	@Override
@@ -45,5 +72,22 @@ public class PostServiceImpl implements PostService{
 		Post pst=pre.findById(postId).orElseThrow(null);
 		return mapToDTO(pst);
 	}
+
+	@Override
+	public PostDTO updatePost(int postId, PostDTO pd) {
+		Post ps = pre.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post", "Id",postId));
+		ps.setTitle(pd.getTitle());
+		ps.setDescription(pd.getDescription());
+		ps.setContent(pd.getContent());
+		
+		return mapToDTO(pre.save(ps));
+	}
+
+	@Override
+	public String DeletePost(int postId) {
+		Post pst = pre.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post", "Id", postId));
+		pre.delete(pst); 
+		return "Post with postId="+postId+"is deleted successfully";
+		}
 
 }

@@ -18,6 +18,8 @@ import com.smedia.dto.PostDTO;
 import com.smedia.service.PostService;
 import com.smedia.utils.AppConstants;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -26,7 +28,7 @@ public class PostController {
 	private PostService psre;
 
 	@PostMapping("/createPost")
-	public ResponseEntity<PostDTO> create(@RequestBody PostDTO psd) {
+	public ResponseEntity<PostDTO> create(@Valid @RequestBody PostDTO psd) {
 		return new ResponseEntity<PostDTO>(psre.createPost(psd),HttpStatus.CREATED);
 	}
 
@@ -47,7 +49,7 @@ public class PostController {
 	}
 	
 	@PutMapping("/{postId}")
-	public ResponseEntity<PostDTO> updatePostById(@PathVariable int postId,@RequestBody PostDTO psd){
+	public ResponseEntity<PostDTO> updatePostById(@PathVariable int postId,@Valid @RequestBody PostDTO psd){
 		return new ResponseEntity<PostDTO>(psre.updatePost(postId, psd),HttpStatus.OK);
 	}
 	

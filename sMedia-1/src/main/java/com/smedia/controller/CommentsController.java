@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.smedia.dto.CommentsDTO;
 import com.smedia.service.CommentsService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/posts")
 public class CommentsController {
@@ -25,7 +27,7 @@ public class CommentsController {
 	private CommentsService csr;
 	
 	@PostMapping("/{postId}/comments")
-	public ResponseEntity<CommentsDTO> create(@PathVariable int postId ,@RequestBody CommentsDTO cdto) {
+	public ResponseEntity<CommentsDTO> create(@PathVariable int postId ,@Valid @RequestBody CommentsDTO cdto) {
 		return new ResponseEntity<CommentsDTO>(csr.createComment(postId, cdto),HttpStatus.CREATED);
 	}
 	
@@ -40,7 +42,7 @@ public class CommentsController {
 	}
 	
 	@PutMapping("/{postId}/comments/{commentId}")
-	public ResponseEntity<CommentsDTO> updateById(@PathVariable int postId,@PathVariable int commentId,@RequestBody CommentsDTO cdto){
+	public ResponseEntity<CommentsDTO> updateById(@PathVariable int postId,@PathVariable int commentId,@Valid @RequestBody CommentsDTO cdto){
 		return new ResponseEntity<CommentsDTO>(csr.updateComment(postId, commentId, cdto),HttpStatus.OK);
 	}
 	

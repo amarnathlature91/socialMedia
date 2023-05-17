@@ -2,12 +2,22 @@ package com.smedia.dto;
 
 import java.util.Set;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+
 public class PostDTO {
 	
 	private int id;
+	
+	@NotEmpty(message = "post title should not be empty")
+	@Size(min = 5,message="Post title should be at least 5 characters")
 	private String title;
+	@NotEmpty(message = "post description should not be empty")
+	@Size(min = 5,message="Post description should be at least 5 characters")
 	private String description;
+	@NotEmpty(message = "post content should not be empty")
 	private String content;
+	
 	private Set<CommentsDTO> comments;
 	
 	public int getId() {

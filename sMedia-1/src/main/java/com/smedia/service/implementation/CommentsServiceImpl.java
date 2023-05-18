@@ -7,9 +7,8 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-
 import com.smedia.dto.CommentsDTO;
 import com.smedia.entity.Comments;
 import com.smedia.entity.Post;
@@ -50,6 +49,7 @@ public class CommentsServiceImpl implements CommentsService{
 	    }
 	}
 	
+	@PreAuthorize("hasRole('ADMIN')")
 	@Override
 	public CommentsDTO createComment(int postId,CommentsDTO cdto) {
 
@@ -77,6 +77,7 @@ public class CommentsServiceImpl implements CommentsService{
 		}
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@Override
 	public CommentsDTO updateComment(int postId, int commentId, CommentsDTO cdto) {
 		if(checkPostComment(postId, commentId)) {

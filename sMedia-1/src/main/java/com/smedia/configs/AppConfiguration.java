@@ -1,4 +1,4 @@
-package com.smedia.utils;
+package com.smedia.configs;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

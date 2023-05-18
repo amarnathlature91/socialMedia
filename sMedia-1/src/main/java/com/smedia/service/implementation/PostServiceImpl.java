@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import com.smedia.dto.ApiResponse;
@@ -61,6 +62,7 @@ public class PostServiceImpl implements PostService{
 	    return ar;
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@Override
 	public PostDTO createPost(PostDTO psd) {
 		
@@ -73,6 +75,7 @@ public class PostServiceImpl implements PostService{
 		return mapToDTO(pst);
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@Override
 	public PostDTO updatePost(int postId, PostDTO pd) {
 		Post ps = pre.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post", "Id",postId));

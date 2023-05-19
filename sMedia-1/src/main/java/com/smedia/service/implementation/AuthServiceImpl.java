@@ -19,6 +19,7 @@ import com.smedia.entity.Users;
 import com.smedia.exception.sMediaException;
 import com.smedia.repository.RoleRepository;
 import com.smedia.repository.UserRepository;
+import com.smedia.security.JwtTokenProvider;
 import com.smedia.service.AuthService;
 
 @Service
@@ -36,12 +37,18 @@ public class AuthServiceImpl implements AuthService{
 	@Autowired
 	private PasswordEncoder penco;
 	
+	@Autowired
+	private JwtTokenProvider jwtpr;
+	
 	@Override
 	public String login(LoginDTO loginDto) {
 		Authentication authenticate = autmn.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUserNameOrEmail(), loginDto.getPassword() ));
 		
 		SecurityContextHolder.getContext().setAuthentication(authenticate);
-		return String.format("login successfull!! Welcome %s", loginDto.getUserNameOrEmail());
+		
+		String token = jwtpr.generateToken(authenticate);
+		
+		return token;
 	}
 
 	@Override

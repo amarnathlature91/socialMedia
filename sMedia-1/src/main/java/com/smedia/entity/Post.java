@@ -23,7 +23,6 @@ public class Post {
 	@OneToMany(mappedBy = "post" ,cascade= CascadeType.ALL,orphanRemoval = true)
 	private Set<Comments> comments;
 
-	
 	public int getId() {
 		return id;
 	}
